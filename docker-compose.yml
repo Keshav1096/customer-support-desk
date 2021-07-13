@@ -1,0 +1,27 @@
+version: "3.7"
+services:
+  mongo-workspace:
+    container_name: mongo-workspace
+    image: mongo
+    ports:
+      - 27018:27017
+    restart: always
+  mongo-agent:
+    container_name: mongo-agent
+    image: mongo
+    ports:
+      - 27019:27017
+    restart: always
+  mongo-ticket:
+    container_name: mongo-ticket
+    image: mongo
+    ports:
+      - 27020:27017
+    restart: always
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:management
+    ports:
+      - 15672:15672
+      - 5672:5672
+    restart: always
