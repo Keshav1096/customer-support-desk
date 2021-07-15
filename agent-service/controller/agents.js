@@ -1,5 +1,5 @@
 const { User } = require("../models");
-const { addUser } = require("../logic/user.logic");
+const { addUser, updateUserStatus } = require("../logic/user.logic");
 
 const createUser = async (req, res) => {
   let { body } = req;
@@ -25,4 +25,23 @@ const createUser = async (req, res) => {
   return res.status(201).json({ success: true, data: userSaved });
 };
 
-module.exports = { createUser };
+const updateAgentStatus = (req, res) => {
+  let { body } = req;
+  let { userId, status } = body;
+
+  if (!userId || !status)
+    return res
+      .status(400)
+      .json({ success: false, err: "Required params missing" });
+
+  // call updateStatus function
+  updateUserStatus(userId, status)
+    .then((data) => {
+      return res.status(200).json({ success: true, data });
+    })
+    .catch((err) => {
+      return res.status(200).json({ success: true, err });
+    });
+};
+
+module.exports = { createUser, updateAgentStatus };

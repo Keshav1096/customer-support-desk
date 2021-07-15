@@ -1,3 +1,7 @@
 // Require methods here
+const {
+  getAllTicketsPaginated,
+  createTicket,
+} = require("./tickets.controller");
 
-module.exports = {};
+module.exports = { getAllTicketsPaginated, createTicket };

@@ -8,6 +8,12 @@ const Routes = require("./routes");
 require("./database");
 require("./worker")();
 
+
+const httpServer = require("http").createServer(app);
+const options = {};
+const io = require("socket.io")(httpServer, options);
+require("./helper/socketio")(io);
+
 app.use(express.json());
 
 app.get("/", (req, res) => {
@@ -16,6 +22,6 @@ app.get("/", (req, res) => {
 
 app.use("/api/user", Routes);
 
-app.listen(port, () => {
+httpServer.listen(port, () => {
   console.log(`Agent service on port ${port}`);
 });

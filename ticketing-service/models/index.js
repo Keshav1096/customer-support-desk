@@ -1,3 +1,4 @@
 // Require models here
-
-module.exports = {};
+const Conversation = require("./conversation.model");
+const Ticket = require("./ticket.model");
+module.exports = { Conversation, Ticket };

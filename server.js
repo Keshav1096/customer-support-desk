@@ -11,8 +11,8 @@ let user = {};
 io.on("connection", (socket) => {
   console.log(socket.id);
   socket.on("user-register", (data) => {
-    console.log(data);
-    user[data.id] = socket;
+    // console.log(data.id);
+    user[data.id] = { socketId: socket.id, socket: socket };
     console.log(user);
   });
 });

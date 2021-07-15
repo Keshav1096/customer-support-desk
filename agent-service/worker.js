@@ -1,9 +1,9 @@
-const { consume } = require("./controller/rabbitmq");
+// const { consume } = require("./controller/rabbitmq");
+const { consume } = require("./helper/rabbit");
 const { updateUser } = require("./logic/user.logic");
 
 // consume workspace created message
 module.exports = () => {
-  // console.log("rabbitmq listening");
   consume("workspace_created", (data) => {
     console.log("WORKER " + data);
     try {
@@ -15,5 +15,3 @@ module.exports = () => {
   });
   consume("workspace_updated", (data) => {});
 };
-
-// module.exports = { rabbitMqConsume };
