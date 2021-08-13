@@ -1,3 +1,6 @@
+/**
+ * Client file to mimic react component
+ */
 const io = require("socket.io-client");
 const socket = io("http://127.0.0.1:3001");
 
@@ -6,10 +9,10 @@ socket.on("connect", () => {
 });
 let data = {
   workspaces: [],
-  email: "janani@howlyst.com",
-  name: "janani",
-  userId: "1626269616701",
-  username: "jananihowlystcom",
+  email: "kesav@howlyst.com",
+  name: "kesav",
+  userId: "1628084634630",
+  username: "kesavhowlystcom",
   agentStatus: "ACTIVE",
 };
 socket.emit("agent-loggedin", data);

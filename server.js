@@ -1,3 +1,7 @@
+/**
+ * Server file for reference
+ */
+
 const app = require("express")();
 const httpServer = require("http").createServer(app);
 const port = 3000;
