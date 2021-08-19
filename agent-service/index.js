@@ -8,13 +8,27 @@ const Routes = require("./routes");
 require("./database");
 require("./worker")();
 
-
 const httpServer = require("http").createServer(app);
 const options = {};
 const io = require("socket.io")(httpServer, options);
 require("./helper/socketio")(io);
 
 app.use(express.json());
+app.use("/api", (req, res, next) => {
+  res.publish = ({ status, message = "", data = {} }) => {
+    const STATUS_REGEX = /^[4-5][0-9]{2}/gm;
+    let success = true;
+    if (status.toString().match(STATUS_REGEX)) {
+      success = false;
+    }
+    res.status(status).json({
+      success,
+      message,
+      data,
+    });
+  };
+  next();
+});
 
 app.get("/", (req, res) => {
   res.send("Agent service");

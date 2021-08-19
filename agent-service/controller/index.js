@@ -1,3 +1,3 @@
-const { createUser, updateAgentStatus } = require("./agents");
+const { createUser, updateAgentStatus, loginAgent } = require("./agents");
 
-module.exports = { createUser, updateAgentStatus };
+module.exports = { createUser, updateAgentStatus, loginAgent };

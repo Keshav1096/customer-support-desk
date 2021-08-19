@@ -1,6 +1,6 @@
 const { User } = require("../models");
 const { sanitize } = require("../utils/sanitize");
-const { hash } = require("../utils/bcrypt");
+const { hash, validate } = require("../utils/bcrypt");
 const Redis = require("../helper/redis");
 const Rabbit = require("../helper/rabbit");
 const _ = require("lodash");
@@ -56,7 +56,6 @@ const updateUserStatus = (userId, status) => {
       .catch((err) => []);
 
     let userPos = _.findIndex(listOfAgents, { userId });
-    console.log(userPos);
     if (userPos !== -1 && userStatuses.includes(status.toUpperCase())) {
       listOfAgents[userPos].agentStatus = status.toUpperCase();
       await Redis.set("list_of_agents", listOfAgents);
@@ -68,4 +67,14 @@ const updateUserStatus = (userId, status) => {
   });
 };
 
-module.exports = { addUser, updateUser, updateUserStatus };
+const verifyUserLogin = (email, password) => {
+  return new Promise(async (resolve, reject) => {
+    let userDetails = await User.findOne({ email }).catch((err) => reject(err));
+    let isAuth = await validate(password, userDetails.password).catch((err) =>
+      reject(err)
+    );
+    if (!isAuth) return reject();
+    return resolve();
+  });
+};
+module.exports = { addUser, updateUser, updateUserStatus, verifyUserLogin };
