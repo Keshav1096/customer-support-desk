@@ -8,7 +8,7 @@ const User = new Schema(
     password: { type: String, required: "Password is required" },
     workspaces: [String],
     username: { type: String, required: "Username is required" },
-    userId: { type: String, required: "UserId is required" },
+    authToken: { type: String, required: "Auth token missing" },
   },
   {
     timestamps: true,

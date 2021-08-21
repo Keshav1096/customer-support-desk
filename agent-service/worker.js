@@ -1,6 +1,6 @@
 // const { consume } = require("./controller/rabbitmq");
 const { consume } = require("./helper/rabbit");
-const { updateUser } = require("./logic/user.logic");
+const { updateUser } = require("./functions/user.logic");
 
 // consume workspace created message
 module.exports = () => {

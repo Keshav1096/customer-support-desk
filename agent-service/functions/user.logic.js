@@ -4,31 +4,36 @@ const { hash, validate } = require("../utils/bcrypt");
 const Redis = require("../helper/redis");
 const Rabbit = require("../helper/rabbit");
 const _ = require("lodash");
+const { generateToken, verifyToken } = require("../utils/jwt");
 
 const userStatuses = ["ACTIVE", "AWAY"];
 
 const addUser = async ({ email = "", name = "", password = "" }) => {
+  let userData = {
+    email,
+  };
   let userObj = {
     email,
     name,
     password: await hash(password),
-    userId: Date.now(),
     username: sanitize(email),
+    authToken: await generateToken(),
   };
 
   let isRegistered = await User.findOne({ email }).catch((err) => {
     return false;
   });
   if (isRegistered) {
-    return { isRegistered: false, message: "User already registered" };
+    return Promise.reject("User already registered");
   }
   userObj = new User(userObj);
   let userSaved = await userObj.save().catch((err) => {
     return false;
   });
-  if (userSaved) {
-    return { isRegistered: true, data: userSaved };
+  if (!userSaved) {
+    return Promise.reject("Something went wrong");
   }
+  return Promise.resolve(userSaved);
 };
 
 const updateUser = async (data) => {
@@ -65,16 +70,19 @@ const updateUserStatus = (userId, status) => {
       return reject("Unable to update agent status");
     }
   });
-};
+}; 
 
 const verifyUserLogin = (email, password) => {
   return new Promise(async (resolve, reject) => {
     let userDetails = await User.findOne({ email }).catch((err) => reject(err));
+
+    if (!userDetails) return reject("User not found");
+
     let isAuth = await validate(password, userDetails.password).catch((err) =>
       reject(err)
     );
     if (!isAuth) return reject();
-    return resolve();
+    return resolve({ token: userDetails.authToken });
   });
 };
 module.exports = { addUser, updateUser, updateUserStatus, verifyUserLogin };

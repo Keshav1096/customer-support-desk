@@ -3,30 +3,23 @@ const {
   addUser,
   updateUserStatus,
   verifyUserLogin,
-} = require("../logic/user.logic");
+} = require("../functions/user.logic");
 
 const createUser = async (req, res) => {
   let { body } = req;
   let { email, password, name } = body;
   if (!email || !password || !name) {
-    return res
-      .status(400)
-      .json({ success: false, err: "Required params missing" });
+    return res.publish({ status: 400, message: "Required params missing" });
   }
   let userObj = {
     email,
     name,
     password,
   };
-  let userSaved = await addUser(userObj);
 
-  if (!userSaved) {
-    return res.status(500).json({
-      success: false,
-      err: "something went wrong",
-    });
-  }
-  return res.status(201).json({ success: true, data: userSaved });
+  addUser(userObj)
+    .then((userSaved) => res.publish({ status: 200, data: userSaved }))
+    .catch((err) => res.publish({ success: false, status: 200, message: err }));
 };
 
 const updateAgentStatus = (req, res) => {
@@ -34,9 +27,6 @@ const updateAgentStatus = (req, res) => {
   let { userId, status } = body;
 
   if (!userId || !status)
-    // return res
-    //   .status(400)
-    //   .json({ success: false, err: "Required params missing" });
     return res.publish({
       status: 400,
       message: "Missing params",
@@ -46,7 +36,6 @@ const updateAgentStatus = (req, res) => {
   // call updateStatus function
   updateUserStatus(userId, status)
     .then((data) => {
-      // return res.status(200).json({ success: true, data });
       return res.publish({
         status: 200,
         message: "",
@@ -67,16 +56,18 @@ const loginAgent = (req, res) => {
       data: {},
     });
   verifyUserLogin(email, password)
-    .then(() => {
+    .then((data) => {
       res.publish({
         status: 200,
         message: "User authenticated!",
+        data,
       });
     })
     .catch((err) => {
       res.publish({
-        status: 403,
-        message: "Forbiden!",
+        success: false,
+        status: 401,
+        message: "Unauthorised!",
       });
     });
 };

@@ -1,8 +1,12 @@
 const express = require("express");
 const router = express();
+
 // define all your imports in here
-const { createUser, updateAgentStatus, loginAgent } = require("../controller");
-router.post("/signup", createUser);
-router.post("/login", loginAgent);
-router.post("/update/status", updateAgentStatus);
+const userRouter = require("./user.routes");
+const ticketRouter = require("./ticket.routes");
+
+//define your routes here
+router.use("/user", userRouter);
+router.use("/ticket", ticketRouter);
+
 module.exports = router;
